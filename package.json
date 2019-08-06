@@ -1,7 +1,7 @@
 {
   "name": "aplos-ckeditor",
-  "version": "1.0.2",
-  "description": "The classic editor build of CKEditor 5 – the best browser-based rich text editor.",
+  "version": "1.0.0",
+  "description": "The classic editor build of CKEditor 5 with Aplos extensions.",
   "keywords": [
     "ckeditor5-build",
     "ckeditor",
@@ -18,7 +18,8 @@
     "collaboration",
     "collaborative",
     "real-time",
-    "framework"
+    "framework",
+    "aplos"
   ],
   "main": "./build/ckeditor.js",
   "files": [

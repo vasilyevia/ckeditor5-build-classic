@@ -73,7 +73,6 @@ ClassicEditor.defaultConfig = {
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
-			'|',
 			'variables',
 			'|',
 			'undo',

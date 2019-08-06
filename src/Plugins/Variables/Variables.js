@@ -1,51 +1,61 @@
-/* global console */
-
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin from "@ckeditor/ckeditor5-core/src/plugin";
+import Collection from "@ckeditor/ckeditor5-utils/src/collection";
+import Model from "@ckeditor/ckeditor5-ui/src/model";
 import {
 	createDropdown,
 	addListToDropdown
-} from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
+} from "@ckeditor/ckeditor5-ui/src/dropdown/utils";
 
 export default class Variables extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( 'variables', locale => {
-			const dropdown = createDropdown( locale );
+		var variables = editor.config.get("variables");
 
-			dropdown.buttonView.set( {
-				label: 'Available variables',
+		editor.ui.componentFactory.add("variables", locale => {
+			const dropdown = createDropdown(locale);
+
+			dropdown.buttonView.set({
+				label: "Variables",
 				withText: true
-			} );
+			});
 
-			const items = new Collection();
+			if (!Array.isArray(variables) || variables.length < 1) {
+				//hide dropdown
 
-			items.add( {
-				type: 'button',
-				model: new Model( {
-					withText: true,
-					label: 'First item',
-					labelStyle: 'color: red'
-				} )
-			} );
+				dropdown.buttonView.isVisible = false;
+			} else {
+				//populate dropdown
 
-			items.add( {
-				type: 'button',
-				model: new Model( {
-					withText: true,
-					label: 'Second item',
-					labelStyle: 'color: green',
-					class: 'foo'
-				} )
-			} );
+				const items = new Collection();
 
-			addListToDropdown( dropdown, items );
+				for (var i in variables) {
+					const variable = variables[i];
+
+					items.add({
+						type: "button",
+						model: new Model({
+							withText: true,
+							label: variable.text,
+							code: variable.code
+						})
+					});
+				}
+
+				addListToDropdown(dropdown, items);
+
+				dropdown.on("execute", evtInfo => {
+					const button = evtInfo.source;
+					const code = button.code;
+					const cursorPosition = editor.model.document.selection.getFirstPosition();
+
+					editor.model.change(writer => {
+						writer.insertText(code, cursorPosition);
+					});
+				});
+			}
 
 			return dropdown;
-		} );
-
-		console.log( 'Variables plugin was initialized' );
+		});
 	}
 }
